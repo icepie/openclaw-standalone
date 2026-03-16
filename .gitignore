@@ -14,6 +14,9 @@ output/
 # Node
 node_modules/
 
+# Wrangler
+.wrangler/
+
 # OS
 .DS_Store
 Thumbs.db
