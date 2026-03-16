@@ -39,7 +39,6 @@ ChangesEnvironment=yes
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayIcon={app}\openclaw.cmd
-VersionInfoVersion={#AppVersion}
 VersionInfoCompany=QingChenCloud
 VersionInfoDescription=OpenClaw - AI 智能体引擎
 VersionInfoProductName=OpenClaw
