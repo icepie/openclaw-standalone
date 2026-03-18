@@ -69,6 +69,14 @@ npm install "$OPENCLAW_PKG" \
 
 popd > /dev/null
 
+# --- 3b. Patch: create missing changelog.js stub (upstream bug in @mariozechner/pi-coding-agent) ---
+CHANGELOG_STUB="$BUILD_DIR/node_modules/@mariozechner/pi-coding-agent/dist/utils/changelog.js"
+if [ ! -f "$CHANGELOG_STUB" ]; then
+    echo "Patching: creating missing changelog.js stub"
+    mkdir -p "$(dirname "$CHANGELOG_STUB")"
+    echo 'export function getChangelog() { return "No changelog available." }' > "$CHANGELOG_STUB"
+fi
+
 # --- 4. Copy Node.js binary ---
 echo ""
 echo "=== Step 4: Copying Node.js runtime ==="

@@ -51,6 +51,15 @@ if ($LASTEXITCODE -ne 0) {
 }
 Pop-Location
 
+# --- 3b. Patch: create missing changelog.js stub (upstream bug in @mariozechner/pi-coding-agent) ---
+$changelogStub = "$BuildDir\node_modules\@mariozechner\pi-coding-agent\dist\utils\changelog.js"
+if (-not (Test-Path $changelogStub)) {
+    Write-Host "Patching: creating missing changelog.js stub" -ForegroundColor Yellow
+    $stubDir = Split-Path $changelogStub
+    if (-not (Test-Path $stubDir)) { New-Item -ItemType Directory -Force -Path $stubDir | Out-Null }
+    'export function getChangelog() { return "No changelog available." }' | Set-Content -Path $changelogStub -Encoding UTF8
+}
+
 # --- 4. Copy Node.js binary ---
 Write-Host "`n=== Step 4: Copying Node.js runtime ===" -ForegroundColor Cyan
 Copy-Item $nodePath "$BuildDir\node.exe"
