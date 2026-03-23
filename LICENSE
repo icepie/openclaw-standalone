@@ -1,7 +1,7 @@
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
-Copyright (c) 2024-2026 QingChenCloud (晴辰云)
+Copyright (c) 2024-2026 OpenClaw Standalone Contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -19,5 +19,4 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 --- Commercial License ---
 
 For commercial use without AGPL obligations, contact:
-  https://github.com/qingchencloud
-  https://gpt.qt.cool
+  https://github.com/icepie/openclaw-standalone/issues

@@ -8,7 +8,7 @@ setlocal enabledelayedexpansion
 
 echo.
 echo ╔══════════════════════════════════════╗
-echo ║     OpenClaw 一键安装 by 晴辰云     ║
+echo ║        OpenClaw 一键安装包         ║
 echo ╚══════════════════════════════════════╝
 echo.
 
@@ -22,12 +22,12 @@ for /f "delims=" %%v in ('powershell -NoProfile -Command "(Invoke-RestMethod -Ur
 
 if "%VERSION%"=="" (
     echo [WARN] R2 获取失败，尝试 GitHub...
-    for /f "delims=" %%v in ('powershell -NoProfile -Command "(Invoke-RestMethod -Uri 'https://api.github.com/repos/qingchencloud/openclaw-standalone/releases/latest' -TimeoutSec 10).tag_name -replace 'v',''" 2^>nul') do set "VERSION=%%v"
+    for /f "delims=" %%v in ('powershell -NoProfile -Command "(Invoke-RestMethod -Uri 'https://api.github.com/repos/icepie/openclaw-standalone/releases/latest' -TimeoutSec 10).tag_name -replace 'v',''" 2^>nul') do set "VERSION=%%v"
 )
 
 if "%VERSION%"=="" (
     echo [ERROR] 无法获取最新版本号。请检查网络连接。
-    echo         或手动下载: https://github.com/qingchencloud/openclaw-standalone/releases
+    echo         或手动下载: https://github.com/icepie/openclaw-standalone/releases
     pause
     exit /b 1
 )
@@ -44,7 +44,7 @@ powershell -NoProfile -Command "try { [Net.ServicePointManager]::SecurityProtoco
 
 if errorlevel 1 (
     echo [WARN] R2 下载失败，尝试 GitHub...
-    set "DOWNLOAD_URL=https://github.com/qingchencloud/openclaw-standalone/releases/download/v%VERSION%/%ARCHIVE%"
+    set "DOWNLOAD_URL=https://github.com/icepie/openclaw-standalone/releases/download/v%VERSION%/%ARCHIVE%"
     powershell -NoProfile -Command "try { $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri '!DOWNLOAD_URL!' -OutFile '%TMP_FILE%' -UseBasicParsing } catch { exit 1 }"
 )
 
@@ -121,8 +121,5 @@ echo   请重新打开终端（PowerShell / CMD）使 PATH 生效，然后：
 echo     openclaw --help        # 查看帮助
 echo     openclaw setup         # 初始化配置
 echo     openclaw gateway       # 启动 Gateway
-echo.
-echo   图形管理面板: https://github.com/qingchencloud/clawpanel
-echo   AI 接口服务:  https://gpt.qt.cool
 echo.
 pause

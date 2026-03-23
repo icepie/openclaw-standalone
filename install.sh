@@ -1,14 +1,14 @@
 #!/bin/bash
 # OpenClaw 一键安装脚本 (macOS / Linux)
 # Usage: curl -fsSL https://dl.qrj.ai/openclaw/install.sh | bash
-# Or:    curl -fsSL https://raw.githubusercontent.com/qingchencloud/openclaw-standalone/main/install.sh | bash
+# Or:    curl -fsSL https://raw.githubusercontent.com/icepie/openclaw-standalone/main/install.sh | bash
 
 set -euo pipefail
 
 # --- Configuration ---
 INSTALL_DIR="${OPENCLAW_HOME:-$HOME/.openclaw-bin}"
 R2_BASE="https://dl.qrj.ai/openclaw-standalone"
-GITHUB_BASE="https://github.com/qingchencloud/openclaw-standalone/releases/download"
+GITHUB_BASE="https://github.com/icepie/openclaw-standalone/releases/download"
 
 # --- Colors ---
 RED='\033[0;31m'
@@ -56,7 +56,7 @@ get_latest_version() {
     # Fallback: GitHub API
     if [ -z "$version" ]; then
         version=$(curl -fsSL --connect-timeout 5 \
-            "https://api.github.com/repos/qingchencloud/openclaw-standalone/releases/latest" 2>/dev/null | \
+            "https://api.github.com/repos/icepie/openclaw-standalone/releases/latest" 2>/dev/null | \
             grep -o '"tag_name"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | \
             grep -o '"[^"]*"$' | tr -d '"v') || true
     fi
@@ -101,7 +101,7 @@ ensure_changelog_stub() {
 main() {
     echo ""
     echo -e "${CYAN}╔══════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║     OpenClaw 一键安装 by 晴辰云     ║${NC}"
+    echo -e "${CYAN}║        OpenClaw 一键安装包         ║${NC}"
     echo -e "${CYAN}╚══════════════════════════════════════╝${NC}"
     echo ""
 
@@ -200,9 +200,6 @@ main() {
     echo "    openclaw --help        # 查看帮助"
     echo "    openclaw setup         # 初始化配置"
     echo "    openclaw gateway       # 启动 Gateway"
-    echo ""
-    echo -e "  图形管理面板: ${CYAN}https://github.com/qingchencloud/clawpanel${NC}"
-    echo -e "  AI 接口服务:  ${CYAN}https://gpt.qt.cool${NC}"
     echo ""
 }
 

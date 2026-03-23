@@ -383,7 +383,7 @@ jobs:
               printf '%s\n' "或手动: 下载对应平台的 \`.tar.gz\` → 解压 → 将目录加入 PATH"
               printf '\n'
               printf '%s\n' "---"
-              printf '%s\n' "由 [晴辰云](https://gpt.qt.cool) 构建 · [ClawPanel 图形管理面板](https://github.com/qingchencloud/clawpanel)"
+              printf '%s\n' "项目仓库: https://github.com/icepie/openclaw-standalone"
             } > release/body.md
           fi
 
