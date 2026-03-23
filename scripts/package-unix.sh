@@ -74,7 +74,7 @@ CHANGELOG_STUB="$BUILD_DIR/node_modules/@mariozechner/pi-coding-agent/dist/utils
 if [ ! -f "$CHANGELOG_STUB" ]; then
     echo "Patching: creating missing changelog.js stub"
     mkdir -p "$(dirname "$CHANGELOG_STUB")"
-    echo 'export function getChangelog() { return "No changelog available." }' > "$CHANGELOG_STUB"
+    echo 'import { fileURLToPath } from "url"; import { dirname, join } from "path"; const __filename = fileURLToPath(import.meta.url); const __dirname = dirname(__filename); export const getChangelogPath = () => join(__dirname, "../../CHANGELOG.md"); export const parseChangelog = (content) => []; export const getNewEntries = async (lastVersion) => []; export const getLatestVersion = () => "0.52.12"; export const getChangelog = async () => [];' > "$CHANGELOG_STUB"
 fi
 
 # --- 4. Copy Node.js binary ---

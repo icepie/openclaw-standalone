@@ -57,7 +57,7 @@ if (-not (Test-Path $changelogStub)) {
     Write-Host "Patching: creating missing changelog.js stub" -ForegroundColor Yellow
     $stubDir = Split-Path $changelogStub
     if (-not (Test-Path $stubDir)) { New-Item -ItemType Directory -Force -Path $stubDir | Out-Null }
-    'export function getChangelog() { return "No changelog available." }' | Set-Content -Path $changelogStub -Encoding UTF8
+    'import { fileURLToPath } from "url"; import { dirname, join } from "path"; const __filename = fileURLToPath(import.meta.url); const __dirname = dirname(__filename); export const getChangelogPath = () => join(__dirname, "../../CHANGELOG.md"); export const parseChangelog = (content) => []; export const getNewEntries = async (lastVersion) => []; export const getLatestVersion = () => "0.52.12"; export const getChangelog = async () => [];' | Set-Content -Path $changelogStub -Encoding UTF8
 }
 
 # --- 4. Copy Node.js binary ---

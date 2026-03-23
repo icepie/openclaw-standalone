@@ -93,7 +93,7 @@ ensure_changelog_stub() {
 
     stub_dir="$(dirname "$stub_path")"
     mkdir -p "$stub_dir"
-    printf '%s\n' 'export function getChangelog() { return "No changelog available." }' > "$stub_path"
+    printf '%s\n' 'import { fileURLToPath } from "url"; import { dirname, join } from "path"; const __filename = fileURLToPath(import.meta.url); const __dirname = dirname(__filename); export const getChangelogPath = () => join(__dirname, "../../CHANGELOG.md"); export const parseChangelog = (content) => []; export const getNewEntries = async (lastVersion) => []; export const getLatestVersion = () => "0.52.12"; export const getChangelog = async () => [];' > "$stub_path"
     ok "已创建缺失的 changelog.js"
 }
 
