@@ -3,7 +3,7 @@
 # Requires: Node.js 22+ installed on the build machine
 
 param(
-    [string]$OpenClawPkg = "@qingchencloud/openclaw-zh",
+    [string]$OpenClawPkg = "openclaw",
     [string]$OutputDir = "output",
     [string]$BuildDir = "build\win-x64",
     [switch]$SkipInstaller
@@ -71,11 +71,7 @@ Copy-Item "shims\openclaw.cmd" "$BuildDir\openclaw.cmd"
 
 # --- 6. Get version info ---
 Write-Host "`n=== Step 6: Reading version info ===" -ForegroundColor Cyan
-$pkgJsonPath = "$BuildDir\node_modules\@qingchencloud\openclaw-zh\package.json"
-if (-not (Test-Path $pkgJsonPath)) {
-    # Fallback: try without scope
-    $pkgJsonPath = "$BuildDir\node_modules\openclaw\package.json"
-}
+$pkgJsonPath = "$BuildDir\node_modules\openclaw\package.json"
 $pkgJson = Get-Content $pkgJsonPath -Raw | ConvertFrom-Json
 $version = $pkgJson.version
 Write-Host "OpenClaw version: $version"

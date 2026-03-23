@@ -20,7 +20,7 @@ on:
 
 env:
   NODE_VERSION: '22'
-  OPENCLAW_PKG: '@qingchencloud/openclaw-zh'
+  OPENCLAW_PKG: 'openclaw'
   NPM_REGISTRY: 'https://registry.npmmirror.com'
 
 jobs:

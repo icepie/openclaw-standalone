@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-OPENCLAW_PKG="${OPENCLAW_PKG:-@qingchencloud/openclaw-zh}"
+OPENCLAW_PKG="${OPENCLAW_PKG:-openclaw}"
 OUTPUT_DIR="${OUTPUT_DIR:-output}"
 SCRIPT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
@@ -93,10 +93,7 @@ chmod +x "$BUILD_DIR/openclaw"
 # --- 6. Get version info ---
 echo ""
 echo "=== Step 6: Reading version info ==="
-PKG_JSON="$BUILD_DIR/node_modules/@qingchencloud/openclaw-zh/package.json"
-if [ ! -f "$PKG_JSON" ]; then
-    PKG_JSON="$BUILD_DIR/node_modules/openclaw/package.json"
-fi
+PKG_JSON="$BUILD_DIR/node_modules/openclaw/package.json"
 VERSION="$(node -e "console.log(require('$PKG_JSON').version)")"
 echo "OpenClaw version: $VERSION"
 
