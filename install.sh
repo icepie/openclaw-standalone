@@ -82,6 +82,21 @@ download() {
     return 1
 }
 
+ensure_changelog_stub() {
+    local stub_path="$INSTALL_DIR/node_modules/@mariozechner/pi-coding-agent/dist/utils/changelog.js"
+    local stub_dir
+
+    if [ -f "$stub_path" ]; then
+        info "changelog.js 已存在"
+        return 0
+    fi
+
+    stub_dir="$(dirname "$stub_path")"
+    mkdir -p "$stub_dir"
+    printf '%s\n' 'export function getChangelog() { return "No changelog available." }' > "$stub_path"
+    ok "已创建缺失的 changelog.js"
+}
+
 # --- Main ---
 main() {
     echo ""
@@ -119,6 +134,9 @@ main() {
     tar -xzf "$TMP_FILE" -C "$INSTALL_DIR" --strip-components=1
     rm -rf "$TMP_DIR"
     ok "解压完成"
+
+    info "检查 changelog.js 补丁..."
+    ensure_changelog_stub
 
     # Verify
     if [ ! -x "$INSTALL_DIR/openclaw" ]; then
