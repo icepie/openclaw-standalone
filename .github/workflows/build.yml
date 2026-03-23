@@ -15,6 +15,8 @@ on:
         default: true
   # Auto-trigger on tag push
   push:
+    branches:
+      - main
     tags:
       - 'v*'
 
@@ -238,11 +240,17 @@ jobs:
   release:
     needs: [resolve-version, build]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
 
     steps:
+      - name: Checkout for release tags
+        if: github.ref == 'refs/heads/main'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -257,6 +265,7 @@ jobs:
           ls -lh release/
 
       - name: Generate latest.json manifest
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           VERSION="${{ needs.resolve-version.outputs.version }}"
           cat > release/latest.json <<EOF
@@ -281,13 +290,49 @@ jobs:
           }
           EOF
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ needs.resolve-version.outputs.version }}
-          name: OpenClaw ${{ needs.resolve-version.outputs.version }}
-          body: |
-            ## OpenClaw ${{ needs.resolve-version.outputs.version }} 独立安装包
+      - name: Move dev tag
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f dev "$GITHUB_SHA"
+          git push origin refs/tags/dev --force
+
+      - name: Prepare release metadata
+        id: release_meta
+        run: |
+          VERSION="${{ needs.resolve-version.outputs.version }}"
+          SHORT_SHA="$(printf '%s' "$GITHUB_SHA" | cut -c1-7)"
+
+          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
+            echo "tag_name=dev" >> "$GITHUB_OUTPUT"
+            echo "release_name=OpenClaw Dev" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            cat > release/body.md <<EOF
+            ## OpenClaw Dev 预发布包
+
+            - OpenClaw 版本: \`$VERSION\`
+            - Commit: \`$SHORT_SHA\`
+            - 分支: \`main\`
+
+            这是自动从 \`main\` 分支发布的 pre-release，用于验证最新改动。
+
+            ### 📥 下载
+
+            | 平台 | 文件 | 说明 |
+            |------|------|------|
+            | Windows x64 | \`*-win-x64-setup.exe\` | 引导式安装 |
+            | Windows x64 | \`*-win-x64.zip\` | 绿色免安装版 |
+            | macOS ARM (Apple Silicon) | \`*-mac-arm64.tar.gz\` | 解压即用 |
+            | Linux x64 | \`*-linux-x64.tar.gz\` | 解压即用 |
+            | Linux ARM64 (树莓派等) | \`*-linux-arm64.tar.gz\` | 解压即用 |
+            EOF
+          else
+            echo "tag_name=v$VERSION" >> "$GITHUB_OUTPUT"
+            echo "release_name=OpenClaw $VERSION" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            cat > release/body.md <<EOF
+            ## OpenClaw $VERSION 独立安装包
 
             **零依赖安装** — 无需 Node.js，无需 npm，下载即用！
 
@@ -295,35 +340,46 @@ jobs:
 
             | 平台 | 文件 | 说明 |
             |------|------|------|
-            | Windows x64 | `*-win-x64-setup.exe` | **推荐** 引导式安装 |
-            | Windows x64 | `*-win-x64.zip` | 绿色免安装版 |
-            | macOS ARM (Apple Silicon) | `*-mac-arm64.tar.gz` | 解压即用 |
-            | Linux x64 | `*-linux-x64.tar.gz` | 解压即用 |
-            | Linux ARM64 (树莓派等) | `*-linux-arm64.tar.gz` | 解压即用 |
+            | Windows x64 | \`*-win-x64-setup.exe\` | **推荐** 引导式安装 |
+            | Windows x64 | \`*-win-x64.zip\` | 绿色免安装版 |
+            | macOS ARM (Apple Silicon) | \`*-mac-arm64.tar.gz\` | 解压即用 |
+            | Linux x64 | \`*-linux-x64.tar.gz\` | 解压即用 |
+            | Linux ARM64 (树莓派等) | \`*-linux-arm64.tar.gz\` | 解压即用 |
 
             ### 🚀 安装方法
 
-            **Windows**: 下载 `.exe` 安装包，双击运行安装向导
+            **Windows**: 下载 \`.exe\` 安装包，双击运行安装向导
 
             **macOS / Linux**:
-            ```bash
+            \`\`\`bash
             curl -fsSL https://dl.qrj.ai/openclaw/install.sh | bash
-            ```
+            \`\`\`
 
-            或手动: 下载对应平台的 `.tar.gz` → 解压 → 将目录加入 PATH
+            或手动: 下载对应平台的 \`.tar.gz\` → 解压 → 将目录加入 PATH
 
             ---
             由 [晴辰云](https://gpt.qt.cool) 构建 · [ClawPanel 图形管理面板](https://github.com/qingchencloud/clawpanel)
+            EOF
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_meta.outputs.tag_name }}
+          name: ${{ steps.release_meta.outputs.release_name }}
+          body_path: release/body.md
           files: release/*
+          overwrite_files: true
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.release_meta.outputs.prerelease }}
+          make_latest: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
+          target_commitish: ${{ github.sha }}
 
   # --- Upload to R2 ---
   upload-r2:
     needs: [resolve-version, build, release]
     runs-on: ubuntu-latest
-    if: >-
-      (startsWith(github.ref, 'refs/tags/v') || github.event.inputs.upload_r2 == 'true')
+    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - name: Download all artifacts
