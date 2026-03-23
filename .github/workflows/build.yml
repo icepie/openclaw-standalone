@@ -308,58 +308,58 @@ jobs:
             echo "tag_name=dev" >> "$GITHUB_OUTPUT"
             echo "release_name=OpenClaw Dev" >> "$GITHUB_OUTPUT"
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            cat > release/body.md <<EOF
-            ## OpenClaw Dev 预发布包
-
-            - OpenClaw 版本: \`$VERSION\`
-            - Commit: \`$SHORT_SHA\`
-            - 分支: \`main\`
-
-            这是自动从 \`main\` 分支发布的 pre-release，用于验证最新改动。
-
-            ### 📥 下载
-
-            | 平台 | 文件 | 说明 |
-            |------|------|------|
-            | Windows x64 | \`*-win-x64-setup.exe\` | 引导式安装 |
-            | Windows x64 | \`*-win-x64.zip\` | 绿色免安装版 |
-            | macOS ARM (Apple Silicon) | \`*-mac-arm64.tar.gz\` | 解压即用 |
-            | Linux x64 | \`*-linux-x64.tar.gz\` | 解压即用 |
-            | Linux ARM64 (树莓派等) | \`*-linux-arm64.tar.gz\` | 解压即用 |
-            EOF
+            {
+              printf '%s\n' "## OpenClaw Dev 预发布包"
+              printf '\n'
+              printf '%s\n' "- OpenClaw 版本: \`$VERSION\`"
+              printf '%s\n' "- Commit: \`$SHORT_SHA\`"
+              printf '%s\n' "- 分支: \`main\`"
+              printf '\n'
+              printf '%s\n' "这是自动从 \`main\` 分支发布的 pre-release，用于验证最新改动。"
+              printf '\n'
+              printf '%s\n' "### 📥 下载"
+              printf '\n'
+              printf '%s\n' "| 平台 | 文件 | 说明 |"
+              printf '%s\n' "|------|------|------|"
+              printf '%s\n' "| Windows x64 | \`*-win-x64-setup.exe\` | 引导式安装 |"
+              printf '%s\n' "| Windows x64 | \`*-win-x64.zip\` | 绿色免安装版 |"
+              printf '%s\n' "| macOS ARM (Apple Silicon) | \`*-mac-arm64.tar.gz\` | 解压即用 |"
+              printf '%s\n' "| Linux x64 | \`*-linux-x64.tar.gz\` | 解压即用 |"
+              printf '%s\n' "| Linux ARM64 (树莓派等) | \`*-linux-arm64.tar.gz\` | 解压即用 |"
+            } > release/body.md
           else
             echo "tag_name=v$VERSION" >> "$GITHUB_OUTPUT"
             echo "release_name=OpenClaw $VERSION" >> "$GITHUB_OUTPUT"
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            cat > release/body.md <<EOF
-            ## OpenClaw $VERSION 独立安装包
-
-            **零依赖安装** — 无需 Node.js，无需 npm，下载即用！
-
-            ### 📥 下载
-
-            | 平台 | 文件 | 说明 |
-            |------|------|------|
-            | Windows x64 | \`*-win-x64-setup.exe\` | **推荐** 引导式安装 |
-            | Windows x64 | \`*-win-x64.zip\` | 绿色免安装版 |
-            | macOS ARM (Apple Silicon) | \`*-mac-arm64.tar.gz\` | 解压即用 |
-            | Linux x64 | \`*-linux-x64.tar.gz\` | 解压即用 |
-            | Linux ARM64 (树莓派等) | \`*-linux-arm64.tar.gz\` | 解压即用 |
-
-            ### 🚀 安装方法
-
-            **Windows**: 下载 \`.exe\` 安装包，双击运行安装向导
-
-            **macOS / Linux**:
-            \`\`\`bash
-            curl -fsSL https://dl.qrj.ai/openclaw/install.sh | bash
-            \`\`\`
-
-            或手动: 下载对应平台的 \`.tar.gz\` → 解压 → 将目录加入 PATH
-
-            ---
-            由 [晴辰云](https://gpt.qt.cool) 构建 · [ClawPanel 图形管理面板](https://github.com/qingchencloud/clawpanel)
-            EOF
+            {
+              printf '%s\n' "## OpenClaw $VERSION 独立安装包"
+              printf '\n'
+              printf '%s\n' "**零依赖安装** — 无需 Node.js，无需 npm，下载即用！"
+              printf '\n'
+              printf '%s\n' "### 📥 下载"
+              printf '\n'
+              printf '%s\n' "| 平台 | 文件 | 说明 |"
+              printf '%s\n' "|------|------|------|"
+              printf '%s\n' "| Windows x64 | \`*-win-x64-setup.exe\` | **推荐** 引导式安装 |"
+              printf '%s\n' "| Windows x64 | \`*-win-x64.zip\` | 绿色免安装版 |"
+              printf '%s\n' "| macOS ARM (Apple Silicon) | \`*-mac-arm64.tar.gz\` | 解压即用 |"
+              printf '%s\n' "| Linux x64 | \`*-linux-x64.tar.gz\` | 解压即用 |"
+              printf '%s\n' "| Linux ARM64 (树莓派等) | \`*-linux-arm64.tar.gz\` | 解压即用 |"
+              printf '\n'
+              printf '%s\n' "### 🚀 安装方法"
+              printf '\n'
+              printf '%s\n' "**Windows**: 下载 \`.exe\` 安装包，双击运行安装向导"
+              printf '\n'
+              printf '%s\n' "**macOS / Linux**:"
+              printf '%s\n' "\`\`\`bash"
+              printf '%s\n' "curl -fsSL https://dl.qrj.ai/openclaw/install.sh | bash"
+              printf '%s\n' "\`\`\`"
+              printf '\n'
+              printf '%s\n' "或手动: 下载对应平台的 \`.tar.gz\` → 解压 → 将目录加入 PATH"
+              printf '\n'
+              printf '%s\n' "---"
+              printf '%s\n' "由 [晴辰云](https://gpt.qt.cool) 构建 · [ClawPanel 图形管理面板](https://github.com/qingchencloud/clawpanel)"
+            } > release/body.md
           fi
 
       - name: Create GitHub Release
