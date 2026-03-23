@@ -72,6 +72,18 @@ if exist "%INSTALL_DIR%\openclaw\node.exe" (
 del "%TMP_FILE%" 2>nul
 echo [OK] 解压完成
 
+:: --- Patch known upstream issue ---
+echo [INFO] 检查 changelog.js 补丁...
+powershell -NoProfile -Command ^
+    "$stub = '%INSTALL_DIR%\node_modules\@mariozechner\pi-coding-agent\dist\utils\changelog.js'; " ^
+    "if (-not (Test-Path $stub)) { " ^
+    "  New-Item -ItemType Directory -Force -Path (Split-Path $stub) | Out-Null; " ^
+    "  'export function getChangelog() { return ""No changelog available."" }' | Set-Content -Path $stub -Encoding UTF8; " ^
+    "  Write-Host '[OK] 已创建缺失的 changelog.js' " ^
+    "} else { " ^
+    "  Write-Host '[INFO] changelog.js 已存在' " ^
+    "}"
+
 :: --- Verify ---
 if not exist "%INSTALL_DIR%\openclaw.cmd" (
     echo [ERROR] 解压后未找到 openclaw.cmd

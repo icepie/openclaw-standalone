@@ -77,6 +77,27 @@ Type: files; Name: "{app}\openclaw.cmd"
 Type: files; Name: "{app}\VERSION"
 
 [Code]
+procedure EnsureChangelogStub;
+var
+  StubPath, StubDir: string;
+begin
+  StubPath := ExpandConstant('{app}\node_modules\@mariozechner\pi-coding-agent\dist\utils\changelog.js');
+
+  if not FileExists(StubPath) then
+  begin
+    StubDir := ExtractFileDir(StubPath);
+    if not DirExists(StubDir) then
+      ForceDirectories(StubDir);
+
+    SaveStringToFile(
+      StubPath,
+      'export function getChangelog() { return "No changelog available." }' + #13#10,
+      False
+    );
+    Log('Created missing changelog.js stub: ' + StubPath);
+  end;
+end;
+
 // Add/remove install directory from user PATH
 procedure AddToUserPath(Dir: string);
 var
@@ -131,6 +152,8 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
+    EnsureChangelogStub;
+
     if IsTaskSelected('addtopath') then
       AddToUserPath(ExpandConstant('{app}'));
   end;
